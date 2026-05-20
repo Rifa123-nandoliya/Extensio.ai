@@ -3,6 +3,7 @@ import { extensionProjectSchema } from "../schemas/extension.schema";
 import { generateExtensionFromAI } from "../services/ai.service";
 import { writeProjectFiles } from "../services/fileWriter.service";
 import { zipProject } from "../services/zip.service";
+import Project from "../models/project.model";
 
 const router = Router();
 
@@ -31,13 +32,20 @@ router.post("/", async (req: Request, res: Response) => {
 
     const { projectId, projectFolder } = await writeProjectFiles(validationResult.data);
     await zipProject(projectFolder, projectId);
+    const savedProject = await Project.create({
+  prompt,
+  projectName: validationResult.data.projectName,
+  description: validationResult.data.description,
+  files: validationResult.data.files,
+  zipUrl: `http://localhost:5000/downloads/${projectId}.zip`
+});
 
     return res.status(200).json({
        success: true,
        message: "Extension generated successfully",
        projectId,
        downloadUrl: `http://localhost:5000/downloads/${projectId}.zip`,
-       data: validationResult.data
+      data: savedProject
     });
   } catch (error: any) {
     console.error("Generate route error:", error);
