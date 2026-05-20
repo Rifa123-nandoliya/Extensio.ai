@@ -1,17 +1,19 @@
-export async function generateExtension(prompt) {
-  const response = await fetch("http://localhost:5000/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ prompt })
-  });
+import axios from "axios";
+const API = "http://localhost:5000/api";
 
-  const data = await response.json();
+export const generateExtension = async (prompt) => {
+  const response = await axios.post(
+    `${API}/generate`,
+    { prompt }
+  );
 
-  if (!response.ok) {
-    throw new Error(data.message || "Something went wrong");
-  }
+  return response.data;
+};
 
-  return data;
-}
+export const getProjects = async () => {
+  const response = await axios.get(
+    `${API}/projects`
+  );
+
+  return response.data;
+};
