@@ -1,12 +1,17 @@
 import dotenv from "dotenv";
+import connectDB from "./config/db";
 dotenv.config({ path: "./.env" }); // FORCE PATH
 
 console.log("Loaded key:", process.env.GROQ_API_KEY); // debug
 
-import app from "./app";
+(async () => {
+  await connectDB(); // Connect to MongoDB
 
-const PORT = process.env.PORT || 5000;
+  const app = (await import("./app")).default;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+})();
