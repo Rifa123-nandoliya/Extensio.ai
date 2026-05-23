@@ -18,7 +18,16 @@ export default function Contact() {
       <div style={styles.container}>
 
         {/* BACK BUTTON */}
-        <button onClick={() => navigate("/")} style={styles.backBtn}>
+        <button
+          onClick={() => navigate("/")}
+          style={styles.backBtn}
+          onMouseOver={(e) =>
+            (e.target.style.transform = "scale(1.05)")
+          }
+          onMouseOut={(e) =>
+            (e.target.style.transform = "scale(1)")
+          }
+        >
           ← Back
         </button>
 
@@ -29,16 +38,32 @@ export default function Contact() {
         </p>
 
         <div style={styles.card}>
-          <input placeholder="Your Name" style={styles.input} />
 
-          <input placeholder="Your Email" style={styles.input} />
+          <input
+            placeholder="Your Name"
+            style={styles.input}
+          />
+
+          <input
+            placeholder="Your Email"
+            style={styles.input}
+          />
 
           <textarea
             placeholder="Describe your issue..."
             style={styles.textarea}
           />
 
-          <button style={styles.button} onClick={handleSubmit}>
+          <button
+            style={styles.button}
+            onClick={handleSubmit}
+            onMouseOver={(e) =>
+              (e.target.style.transform = "scale(1.03)")
+            }
+            onMouseOut={(e) =>
+              (e.target.style.transform = "scale(1)")
+            }
+          >
             🚀 Submit
           </button>
 
@@ -47,6 +72,7 @@ export default function Contact() {
               ✅ Response submitted successfully!
             </p>
           )}
+
         </div>
       </div>
     </div>
@@ -54,74 +80,93 @@ export default function Contact() {
 }
 
 const styles = {
+
   page: {
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #0F172A, #1E3A8A)",
-    color: "#fff",
-    padding: "40px"
+    background: "#F3F4F6",
+    padding: "40px",
+    fontFamily: "Arial, sans-serif",
   },
 
   container: {
-    maxWidth: "600px",
-    margin: "auto"
+    maxWidth: "650px",
+    margin: "auto",
   },
 
   backBtn: {
     marginBottom: "20px",
-    padding: "8px 12px",
-    borderRadius: "8px",
+    padding: "10px 16px",
+    borderRadius: "10px",
     border: "none",
-    background: "#6366F1",
+    background: "#111827",
     color: "#fff",
-    cursor: "pointer"
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "0.3s",
   },
 
   title: {
-    fontSize: "32px",
-    marginBottom: "10px"
+    fontSize: "42px",
+    marginBottom: "10px",
+    color: "#111827",
+    fontWeight: "bold",
   },
 
   subtitle: {
-    color: "#CBD5F5",
-    marginBottom: "20px"
+    color: "#6B7280",
+    marginBottom: "25px",
+    fontSize: "16px",
   },
 
   card: {
-    background: "rgba(255,255,255,0.1)",
-    padding: "20px",
-    borderRadius: "15px",
-    backdropFilter: "blur(10px)"
+    background: "#FFFFFF",
+    padding: "25px",
+    borderRadius: "18px",
+    border: "1px solid #E5E7EB",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
   },
 
   input: {
     width: "100%",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "8px",
-    border: "none"
+    padding: "14px",
+    marginBottom: "15px",
+    borderRadius: "10px",
+    border: "1px solid #D1D5DB",
+    fontSize: "15px",
+    outline: "none",
+    boxSizing: "border-box",
   },
 
   textarea: {
     width: "100%",
-    height: "120px",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "none",
-    marginBottom: "10px"
+    height: "140px",
+    padding: "14px",
+    borderRadius: "10px",
+    border: "1px solid #D1D5DB",
+    marginBottom: "15px",
+    fontSize: "15px",
+    resize: "none",
+    outline: "none",
+    boxSizing: "border-box",
   },
 
   button: {
     width: "100%",
-    padding: "12px",
-    borderRadius: "10px",
+    padding: "14px",
+    borderRadius: "12px",
     border: "none",
-    background: "linear-gradient(to right, #6366F1, #8B5CF6)",
+    background: "linear-gradient(to right, #DC2626, #EF4444)",
     color: "#fff",
-    cursor: "pointer"
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontSize: "16px",
+    transition: "0.3s",
   },
 
   success: {
-    color: "#22C55E",
-    marginTop: "10px"
-  }
+    color: "#16A34A",
+    marginTop: "15px",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 };

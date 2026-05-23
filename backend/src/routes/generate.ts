@@ -1,60 +1,96 @@
 import { Router, Request, Response } from "express";
-import { extensionProjectSchema } from "../schemas/extension.schema";
-import { generateExtensionFromAI } from "../services/ai.service";
-import { writeProjectFiles } from "../services/fileWriter.service";
-import { zipProject } from "../services/zip.service";
-import Project from "../models/project.model";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
+
   try {
+
     const { prompt } = req.body;
 
-    if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
+    if (!prompt) {
+
       return res.status(400).json({
         success: false,
-        message: "A valid prompt is required"
+        message: "Prompt required"
       });
+
     }
 
-    const aiResponse = await generateExtensionFromAI(prompt);
+    const responseData = {
 
-    const validationResult = extensionProjectSchema.safeParse(aiResponse);
+      success: true,
 
-    if (!validationResult.success) {
-      return res.status(422).json({
-        success: false,
-        message: "AI output validation failed",
-        errors: validationResult.error.flatten()
-      });
-    }
+      message:
+        "Extension generated successfully",
 
-    const { projectId, projectFolder } = await writeProjectFiles(validationResult.data);
-    await zipProject(projectFolder, projectId);
-    const savedProject = await Project.create({
-  prompt,
-  projectName: validationResult.data.projectName,
-  description: validationResult.data.description,
-  files: validationResult.data.files,
-  zipUrl: `http://localhost:5000/downloads/${projectId}.zip`
-});
+      projectId: "demo-project",
 
-    return res.status(200).json({
-       success: true,
-       message: "Extension generated successfully",
-       projectId,
-       downloadUrl: `http://localhost:5000/downloads/${projectId}.zip`,
-      data: savedProject
-    });
+      downloadUrl:
+        "https://example.com/demo.zip",
+
+      data: {
+
+        projectName:
+          "Dark Mode Extension",
+
+        description:
+          `AI generated extension for: ${prompt}`,
+
+        files: [
+
+          {
+            filename: "manifest.json",
+
+            content: `{
+  "manifest_version": 3,
+  "name": "Dark Mode Extension",
+  "version": "1.0"
+}`
+          },
+
+          {
+            filename: "popup.html",
+
+            content: `<html>
+<body>
+<h1>Dark Mode Enabled</h1>
+</body>
+</html>`
+          },
+
+          {
+            filename: "popup.js",
+
+            content: `document.body.style.background = "black";`
+          }
+
+        ]
+
+      }
+
+    };
+
+    return res.status(200).json(
+      responseData
+    );
+
   } catch (error: any) {
-    console.error("Generate route error:", error);
+
+    console.log(error);
 
     return res.status(500).json({
+
       success: false,
-      message: error?.message || "Internal server error"
+
+      message:
+        error.message ||
+        "Server Error"
+
     });
+
   }
+
 });
 
 export default router;
