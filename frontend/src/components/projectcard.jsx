@@ -3,6 +3,7 @@ function ProjectCard({ project }) {
     <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
 
       <h3 className="text-xl font-semibold mb-2">
+      
         {project.projectName}
       </h3>
 

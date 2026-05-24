@@ -1,30 +1,42 @@
-import fs from "fs";
-import path from "path";
 import archiver from "archiver";
 
-export function zipProject(projectFolder: string, projectId: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const zipDir = path.join(process.cwd(), "temp", "zips");
-    fs.mkdirSync(zipDir, { recursive: true });
+import fs from "fs";
 
-    const zipPath = path.join(zipDir, `${projectId}.zip`);
-    const output = fs.createWriteStream(zipPath);
-    const archive = archiver("zip", { zlib: { level: 9 } });
+import path from "path";
 
-    output.on("close", () => {
-      resolve(zipPath);
+export async function
+createZip(
+
+  sourceFolder: string,
+
+  zipName: string
+
+) {
+
+  const zipPath =
+    path.join(
+      process.cwd(),
+      "temp",
+      `${zipName}.zip`
+    );
+
+  const output =
+    fs.createWriteStream(zipPath);
+
+  const archive =
+    archiver("zip", {
+      zlib: { level: 9 },
     });
 
-    output.on("error", (err) => {
-      reject(err);
-    });
+  archive.pipe(output);
 
-    archive.on("error", (err) => {
-      reject(err);
-    });
+  archive.directory(
+    sourceFolder,
+    false
+  );
 
-    archive.pipe(output);
-    archive.directory(projectFolder, false);
-    archive.finalize();
-  });
+  await archive.finalize();
+
+  return zipPath;
+
 }

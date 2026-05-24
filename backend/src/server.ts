@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
+
 import app from "./app";
+
+import connectDB from "./config/db";
 
 dotenv.config({ path: "./.env" });
 
-console.log(
-  "Loaded key:",
-  process.env.GROQ_API_KEY
-);
+connectDB();
 
 const PORT =
   process.env.PORT || 5000;
