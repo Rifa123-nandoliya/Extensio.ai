@@ -9,6 +9,7 @@ Developed responsive pages and routing workflow
 Designed extension preview sections and interactive dashboard cards
 Added modern hover effects, transitions and UI interactions
 Improved application responsiveness and overall user experience
+
 ⚡ Frontend Functionalities Developed
 Extension Workflow
 Integrated frontend extension generation workflow
@@ -31,6 +32,7 @@ UI Enhancements
 Added interactive animations and hover effects
 Enhanced typography, spacing and layout consistency
 Improved responsive design for different screen sizes
+
 📂 Frontend Files Created & Modified By Shobha
 Main Frontend Files
 frontend/src/pages/Home.jsx
@@ -45,6 +47,7 @@ frontend/src/components/ProjectCard.jsx
 frontend/src/components/FilePreview.jsx
 frontend/src/main.jsx
 frontend/src/index.css
+
 ⚙️ Rifa Nandoliya (Backend Developer & AI Integration)
 🧠 Backend Architecture & AI Pipeline Development
 Backend Architecture
@@ -74,40 +77,50 @@ Configured MongoDB connection and backend environment setup
 Added project persistence architecture
 Structured backend services for scalability
 Added download route handling
+
 📂 Backend Files Created & Modified By Rifa
+
 Backend Core Files
 backend/src/server.ts
 backend/src/app.ts
 backend/src/config/db.ts
+
 Controllers
 backend/src/controllers/generate.controller.ts
+
 Routes
 backend/src/routes/generate.ts
 backend/src/routes/download.ts
+
 Services
 backend/src/services/ai.service.ts
 backend/src/services/fileWriter.service.ts
 backend/src/services/zip.service.ts
 backend/src/services/project.service.ts
+
 Schemas & Models
 backend/src/schemas/extension.schema.ts
 backend/src/models/project.model.ts
+
 🚀 How To Run
+
 Backend
 cd backend
 npm install
 npm run dev
+
 Frontend
 cd frontend
 npm install
 npm run dev
+
 🌟 Future Improvements
-User Authentication
-Monaco Code Editor
-Live Extension Preview
-Project Dashboard
-Saved Projects History
-Template Marketplace
-AI Model Selection
-Cloud Deployment
-Real-time Extension Editing
+1.User Authentication
+2.Monaco Code Editor
+3.Live Extension Preview
+4.Project Dashboard
+5.Saved Projects History
+6.Template Marketplace
+7.AI Model Selection
+8.Cloud Deployment
+9.Real-time Extension Editing
