@@ -1,135 +1,113 @@
-# 🚀 Extensio AI
-
-A No-Code Chrome Extension Generator powered by AI.
-
----
-
-## ✨ Features
-
-- Generate Chrome extensions using natural language
-- AI-powered extension code generation
-- Modern premium dashboard UI
-- Sidebar navigation with routing
-- Downloads history using localStorage
-- Template-based extension generation
-- Contact & feedback page
-- Live extension preview section
-- Responsive frontend design
-- Dynamic extension generation workflow
-- Downloadable ZIP support
-- Interactive dashboard experience
-
----
-
-## 🛠️ Tech Stack
-
-- React.js
-- Node.js
-- Express.js
-- Vite
-- LocalStorage
-- Groq API
-- React Router DOM
-
----
-
-## 👩‍💻 Team Contributions
-
-# 👩‍🎨 Shobha Ramesh (Frontend Developer & UI Designer)
-
-## 🎨 Complete UI/UX Design & Frontend Development
-
-### Dashboard & UI Creation
-- Created the complete premium dashboard UI from scratch
-- Designed the overall application layout and user flow
-- Developed sidebar navigation system with active states
-- Built modern responsive frontend design
-- Designed extension preview cards and usage panels
-- Added hover animations, transitions and interactive effects
-- Improved typography, spacing and color themes
-- Created professional dashboard experience similar to modern SaaS platforms
-
----
-
-## ⚡ Frontend Functionalities Developed
-
-### Extension Workflow
-- Integrated Generate Extension workflow with frontend
-- Connected API response rendering with UI
-- Added generated extension preview cards
-- Added downloadable ZIP workflow
-
-### Templates System
-- Created Templates gallery section
-- Implemented dynamic prompt autofill functionality
-- Added interactive “Use Template” workflow
-
-### Downloads System
-- Developed Downloads history page
-- Implemented localStorage integration
-- Added delete & clear history functionality
-
-### Contact & Routing
-- Developed Contact Us page UI
-- Added response submission workflow
-- Implemented routing using React Router DOM
-- Added navigation between pages
-
-### UI Enhancements
-- Added responsive sidebar interactions
-- Added button hover animations
-- Added active navigation highlights
-- Enhanced dashboard responsiveness
-
----
-
-## 📂 Frontend Files Created & Modified By Shobha
-
-### Main Frontend Files
-- `frontend/src/pages/Home.jsx`
-- `frontend/src/pages/Contact.jsx`
-- `frontend/src/pages/Downloads.jsx`
-- `frontend/src/index.css`
-- `frontend/src/main.jsx`
-
-### Frontend Features Added
-- Premium Dashboard UI
-- Sidebar Navigation
-- Templates Workflow
-- Downloads History
-- Contact Form UI
-- Responsive Layout
-- Generate Workflow UI
-- Interactive Components
-
----
-
-# ⚙️ Rifa (Backend Developer)
-
-## Backend Development
-- AI extension generation logic
-- API integration
-- Express.js backend setup
-- Route handling
-- Server configuration
-- Groq API integration
-- Backend response handling
-
----
-
-## 📂 Backend Files Modified By Rifa
-
-- `backend/src/routes/generate.ts`
-- `backend/src/server.ts`
-- `backend/src/app.ts`
-
----
-
-# 🚀 How To Run
-
-## Backend
-
-```bash
+👩‍💻 Team Contributions
+👩‍🎨 Shobha Ramesh (Frontend Developer & UI Designer)
+🎨 Complete UI/UX Design & Frontend Development
+Dashboard & UI Creation
+Designed and developed the complete premium frontend UI
+Built responsive dashboard layout inspired by modern SaaS platforms
+Created sidebar navigation system with active route handling
+Developed responsive pages and routing workflow
+Designed extension preview sections and interactive dashboard cards
+Added modern hover effects, transitions and UI interactions
+Improved application responsiveness and overall user experience
+⚡ Frontend Functionalities Developed
+Extension Workflow
+Integrated frontend extension generation workflow
+Connected frontend forms with backend API requests
+Added generated extension preview rendering
+Implemented downloadable ZIP workflow integration
+Templates System
+Developed Templates gallery section
+Added template-based prompt autofill functionality
+Implemented reusable extension generation workflow
+Downloads System
+Built Downloads history page
+Integrated localStorage for storing generated extensions
+Added delete and clear history functionality
+Contact & Navigation
+Developed Contact page UI and routing
+Added navigation between pages using React Router DOM
+Implemented responsive sidebar navigation
+UI Enhancements
+Added interactive animations and hover effects
+Enhanced typography, spacing and layout consistency
+Improved responsive design for different screen sizes
+📂 Frontend Files Created & Modified By Shobha
+Main Frontend Files
+frontend/src/pages/Home.jsx
+frontend/src/pages/Contact.jsx
+frontend/src/pages/Downloads.jsx
+frontend/src/pages/Templates.jsx
+frontend/src/pages/Settings.jsx
+frontend/src/components/Sidebar.jsx
+frontend/src/components/Navbar.jsx
+frontend/src/components/TemplateCard.jsx
+frontend/src/components/ProjectCard.jsx
+frontend/src/components/FilePreview.jsx
+frontend/src/main.jsx
+frontend/src/index.css
+⚙️ Rifa Nandoliya (Backend Developer & AI Integration)
+🧠 Backend Architecture & AI Pipeline Development
+Backend Architecture
+Refactored backend into scalable controllers-services architecture
+Structured backend using modular folder architecture
+Implemented route-controller-service workflow
+Added centralized backend service handling
+AI Integration
+Integrated Groq AI API for extension generation
+Engineered structured AI prompting system
+Added AI response parsing and validation
+Implemented Chrome Extension Manifest V3 generation workflow
+Validation & Security
+Added Zod schema validation for AI-generated responses
+Implemented filename sanitization and validation
+Added manifest.json validation workflow
+Added duplicate filename detection
+Improved backend error handling and response consistency
+File & ZIP Generation Pipeline
+Developed dynamic file generation system
+Implemented extension file writing service
+Built ZIP generation workflow using Archiver
+Added downloadable extension ZIP pipeline
+Implemented temporary project folder generation using UUIDs
+Database & Backend Infrastructure
+Configured MongoDB connection and backend environment setup
+Added project persistence architecture
+Structured backend services for scalability
+Added download route handling
+📂 Backend Files Created & Modified By Rifa
+Backend Core Files
+backend/src/server.ts
+backend/src/app.ts
+backend/src/config/db.ts
+Controllers
+backend/src/controllers/generate.controller.ts
+Routes
+backend/src/routes/generate.ts
+backend/src/routes/download.ts
+Services
+backend/src/services/ai.service.ts
+backend/src/services/fileWriter.service.ts
+backend/src/services/zip.service.ts
+backend/src/services/project.service.ts
+Schemas & Models
+backend/src/schemas/extension.schema.ts
+backend/src/models/project.model.ts
+🚀 How To Run
+Backend
 cd backend
 npm install
-npm start
+npm run dev
+Frontend
+cd frontend
+npm install
+npm run dev
+🌟 Future Improvements
+User Authentication
+Monaco Code Editor
+Live Extension Preview
+Project Dashboard
+Saved Projects History
+Template Marketplace
+AI Model Selection
+Cloud Deployment
+Real-time Extension Editing
