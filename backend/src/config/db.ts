@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
+import { logger } from "../utils/logger";
 
 const connectDB = async () => {
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
-    throw new Error(
-      "MONGO_URI is not defined in environment variables"
-    );
+    throw new Error("MONGO_URI is not defined in environment variables");
   }
 
   try {
@@ -15,13 +14,11 @@ const connectDB = async () => {
       autoIndex: true,
     });
 
-    console.log("MongoDB connected");
-  } catch (error: any) {
-    console.error(
-      "MongoDB connection failed:",
-      error.message
-    );
-
+    logger.info("MongoDB connected");
+  } catch (error) {
+    logger.error("MongoDB connection failed", {
+      message: error instanceof Error ? error.message : String(error),
+    });
     process.exit(1);
   }
 };

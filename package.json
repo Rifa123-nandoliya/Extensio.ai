@@ -1,4 +1,11 @@
 {
+  "name": "extensio-ai",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend"
+  },
   "devDependencies": {
     "knip": "^6.14.2"
   }

@@ -1,24 +1,12 @@
 import archiver from "archiver";
-
 import fs from "fs";
+import { getZipPath } from "../utils/paths";
 
-import path from "path";
-
-export async function
-createZip(
-
+export async function createZip(
   sourceFolder: string,
-
   zipName: string
-
 ) {
-
-  const zipPath =
-    path.join(
-      process.cwd(),
-      "temp",
-      `${zipName}.zip`
-    );
+  const zipPath = getZipPath(zipName);
 
   const output =
     fs.createWriteStream(zipPath);

@@ -1,23 +1,8 @@
 import { Router } from "express";
-
-import path from "path";
+import { downloadProjectZip } from "../controllers/download.controller";
 
 const router = Router();
 
-router.get(
-  "/:filename",
-  (req, res) => {
-
-    const filePath =
-      path.join(
-        process.cwd(),
-        "temp",
-        req.params.filename
-      );
-
-    res.download(filePath);
-
-  }
-);
+router.get("/:projectId.zip", downloadProjectZip);
 
 export default router;

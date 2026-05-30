@@ -1,19 +1,27 @@
-import { Router, Request, Response } from "express";
-import Project from "../models/project.model";
+import { Router } from "express";
+import {
+  listProjects,
+  getProject,
+  removeProject,
+  shareProject,
+  unshareProjectHandler,
+  setVisibility,
+  getVersions,
+  getVersion,
+  restoreVersion,
+} from "../controllers/project.controller";
+import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-router.get("/", async (_req: Request, res: Response) => {
-  try {
-    const projects = await Project.find().sort({ createdAt: -1 });
-    return res.json({ success: true, data: projects });
-  } catch (error: any) {
-    console.error("Project route error:", error);
-    return res.status(500).json({
-      success: false,
-      message: error?.message || "Internal server error"
-    });
-  }
-});
+router.get("/", asyncHandler(listProjects));
+router.get("/:id", asyncHandler(getProject));
+router.delete("/:id", asyncHandler(removeProject));
+router.post("/:id/share", asyncHandler(shareProject));
+router.delete("/:id/share/:userId", asyncHandler(unshareProjectHandler));
+router.patch("/:id/visibility", asyncHandler(setVisibility));
+router.get("/:id/versions", asyncHandler(getVersions));
+router.get("/:id/versions/:versionNumber", asyncHandler(getVersion));
+router.post("/:id/versions/:versionNumber/restore", asyncHandler(restoreVersion));
 
 export default router;

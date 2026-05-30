@@ -1,5 +1,6 @@
-import { Request, Response }
-from "express";
+import { Response } from "express";
+import { AuthRequest } from "../types/express";
+
 import { v4 as uuidv4 }
 from "uuid";
 
@@ -14,89 +15,202 @@ import {
 import {
   generateExtensionFromAI
 } from "../services/ai.service";
+
 import {
   saveProject
 } from "../services/project.service";
+import {
+  assertCanGenerate,
+  incrementGenerationUsage,
+} from "../services/usage.service";
+import { isProPlan } from "../constants/plans";
+import { recordUsageEvent } from "../services/usageTracking.service";
+import User from "../models/user.model";
 
-export const generateExtension =
-async (
-  req: Request,
+export const generateExtension = async (
+  req: AuthRequest,
   res: Response
 ) => {
-
   try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
 
-    const { prompt } = req.body;
+    const { prompt, workspaceId: bodyWorkspaceId } = req.body;
 
     if (!prompt) {
-
       return res.status(400).json({
         success: false,
         message: "Prompt is required",
       });
-
     }
 
-   const result =
-  await generateExtensionFromAI(prompt);
+    await assertCanGenerate(userId);
 
-const projectId =
-  uuidv4();
+    const usePriority = isProPlan(
+      req.user!.subscriptionPlan,
+      req.user!.subscriptionStatus
+    );
 
-const projectPath =
-  await writeProjectFiles(
-    result,
-    projectId
-  );
+    let workspaceId = bodyWorkspaceId ?? null;
+    if (!workspaceId) {
+      const dbUser = await User.findById(userId).select("activeWorkspaceId");
+      workspaceId = dbUser?.activeWorkspaceId ?? null;
+    }
 
-await createZip(
-  projectPath,
-  projectId
-);
-const savedProject =
-  await saveProject({
+    console.log("📝 Starting generation with prompt:", prompt.substring(0, 100));
 
-    projectId,
+    // Generate AI extension
 
-    title:
-      result.projectName,
+    let result;
+    try {
+      console.log("🤖 Calling AI service...");
+      result = await generateExtensionFromAI(prompt, {
+        priority: usePriority,
+      });
+      console.log("✅ AI generation successful. Files:", result.files.length);
+    } catch (aiError: any) {
+      console.error("❌ AI generation failed:", aiError.message);
+      throw aiError;
+    }
 
-    description:
-      result.description,
+    const validFiles = result.files.filter(
+      (file) =>
+        typeof file.content === "string" &&
+        file.content.trim().length > 0
+    );
 
-    prompt,
+    if (validFiles.length !== result.files.length) {
+      const invalidFiles = result.files
+        .filter(
+          (file) =>
+            !file.content ||
+            (typeof file.content === "string" &&
+              file.content.trim().length === 0)
+        )
+        .map((file) => file.filename);
 
-    zipPath:
-      `temp/${projectId}.zip`,
+      console.warn(
+        "⚠️ Removing invalid generated files:",
+        invalidFiles.join(", ")
+      );
 
-    files:
-      result.files,
+      result = {
+        ...result,
+        files: validFiles,
+      };
+    }
 
-});
+    if (validFiles.length === 0) {
+      throw new Error(
+        "AI returned no valid generated files with content"
+      );
+    }
 
-res.status(200).json({
+    // Create unique project id
 
-  success: true,
+    const projectId =
+      uuidv4();
 
-  message:
-    "Extension generated successfully",
+    console.log("📦 Project ID:", projectId);
 
-  projectId,
+    // Write files locally
 
-  downloadUrl:
-    `/api/download/${projectId}.zip`,
+    let projectPath;
+    try {
+      console.log("💾 Writing files to disk...");
+      projectPath =
+        await writeProjectFiles(
+          result,
+          projectId
+        );
+      console.log("✅ Files written successfully to:", projectPath);
+    } catch (writeError: any) {
+      console.error("❌ File writing failed:", writeError.message);
+      throw writeError;
+    }
 
-  savedProject,
+    // Create ZIP
 
-  data: result,
+    try {
+      console.log("📦 Creating ZIP file...");
+      await createZip(
+        projectPath,
+        projectId
+      );
+      console.log("✅ ZIP created successfully");
+    } catch (zipError: any) {
+      console.error("❌ ZIP creation failed:", zipError.message);
+      throw zipError;
+    }
 
-});
+    // Save project in MongoDB
+
+    let savedProject;
+    try {
+      console.log("💾 Saving project to MongoDB...");
+      savedProject = await saveProject({
+        userId,
+        projectId,
+        title: result.projectName,
+        description: result.description,
+        prompt,
+        zipPath: `temp/${projectId}.zip`,
+        files: result.files,
+        workspaceId,
+      });
+      console.log("✅ Project saved to MongoDB");
+    } catch (dbError: any) {
+      console.error("❌ Database save failed:", dbError.message);
+      throw dbError;
+    }
+
+    await incrementGenerationUsage(userId);
+
+    await recordUsageEvent({
+      userId,
+      workspaceId,
+      eventType: "generation",
+      metadata: { projectId, fileCount: result.files.length },
+    });
+
+    // Send response
+
+    res.status(200).json({
+
+      success: true,
+
+      message:
+        "Extension generated successfully",
+
+      projectId,
+
+      downloadUrl:
+        `/api/download/${projectId}.zip`,
+
+      savedProject,
+
+      data: result,
+
+    });
 
   } catch (error: any) {
 
+    console.error("❌ FINAL ERROR:", error);
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message:
+        error.message || "Unknown error occurred",
+
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+
     });
 
   }

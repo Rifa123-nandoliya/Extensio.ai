@@ -1,190 +1,119 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Sparkles, Download, Calendar, FolderKanban } from "lucide-react";
+import DashboardLayout from "../layouts/DashboardLayout";
+import MetricCard from "../components/dashboard/MetricCard";
+import DownloadHistoryRow from "../components/downloads/DownloadHistoryRow";
+import { SkeletonList } from "../components/ui/Skeleton";
+import { useDownloadHistory } from "../hooks/useDownloadHistory";
 
-export default function Downloads() {
-
-  const [data, setData] = useState([]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-
-    const history =
-      JSON.parse(localStorage.getItem("downloads")) || [];
-
-    setData(history);
-
-  }, []);
-
-  const deleteItem = (index) => {
-
-    const updated = [...data];
-
-    updated.splice(index, 1);
-
-    setData(updated);
-
-    localStorage.setItem(
-      "downloads",
-      JSON.stringify(updated)
-    );
-  };
-
-  const clearAll = () => {
-
-    localStorage.removeItem("downloads");
-
-    setData([]);
-  };
+const Downloads = () => {
+  const { downloads, analytics, loading, error } = useDownloadHistory();
 
   return (
-    <div style={styles.page}>
+    <DashboardLayout
+      title="Downloads"
+      subtitle="Your extension ZIP download history stored in the cloud"
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-8">
+        <MetricCard
+          label="Total downloads"
+          value={analytics?.totalDownloads ?? 0}
+          hint="All ZIP downloads recorded"
+          icon={Download}
+          loading={loading}
+        />
+        <MetricCard
+          label="This month"
+          value={analytics?.downloadsThisMonth ?? 0}
+          hint={new Date().toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+          icon={Calendar}
+          loading={loading}
+        />
+        <MetricCard
+          label="Unique projects"
+          value={analytics?.uniqueProjects ?? 0}
+          hint="Projects you've downloaded at least once"
+          icon={FolderKanban}
+          loading={loading}
+        />
+        <MetricCard
+          label="Most downloaded"
+          value={
+            analytics?.downloadCountsByProject?.[0]?.count ?? "—"
+          }
+          hint={
+            analytics?.downloadCountsByProject?.[0]?.projectName ||
+            "No downloads yet"
+          }
+          icon={Download}
+          loading={loading}
+        />
+      </div>
 
-      <button
-        onClick={() => navigate("/")}
-        style={styles.backBtn}
-      >
-        ← Back
-      </button>
-
-      <h1 style={styles.title}>
-        ⬇ Downloads
-      </h1>
-
-      {data.length > 0 && (
-
-        <button
-          style={styles.clearBtn}
-          onClick={clearAll}
-        >
-          🗑 Clear All
-        </button>
-
-      )}
-
-      {data.length === 0 ? (
-
-        <p style={styles.empty}>
-          No downloads yet
-        </p>
-
-      ) : (
-
-        data.map((item, index) => (
-
-          <div key={index} style={styles.card}>
-
-            <div style={styles.row}>
-
-              <h3 style={styles.name}>
-                {item.name}
-              </h3>
-
-              <button
-                style={styles.deleteBtn}
-                onClick={() => deleteItem(index)}
+      {analytics?.downloadCountsByProject?.length > 0 && (
+        <div className="mb-8 rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-zinc-900">
+            Download counts by project
+          </h2>
+          <p className="mt-1 text-sm text-zinc-500 mb-4">
+            How many times each extension was downloaded
+          </p>
+          <div className="space-y-2">
+            {analytics.downloadCountsByProject.map((row) => (
+              <div
+                key={row.projectId}
+                className="flex items-center justify-between gap-4 rounded-lg bg-zinc-50 px-4 py-3"
               >
-                ❌
-              </button>
-
-            </div>
-
-            <p style={styles.desc}>
-              {item.description}
-            </p>
-
-            <small style={styles.date}>
-              {item.date}
-            </small>
-
+                <span className="truncate text-sm font-medium text-zinc-800">
+                  {row.projectName}
+                </span>
+                <span className="shrink-0 text-sm tabular-nums text-zinc-600">
+                  {row.count} download{row.count === 1 ? "" : "s"}
+                </span>
+              </div>
+            ))}
           </div>
-
-        ))
-
+        </div>
       )}
 
-    </div>
+      {error && (
+        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          Failed to load download history.
+        </div>
+      )}
+
+      <h2 className="mb-4 text-lg font-semibold text-zinc-900">
+        Download history
+      </h2>
+
+      {loading ? (
+        <SkeletonList rows={3} />
+      ) : downloads.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-16 text-center">
+          <p className="text-zinc-500">No downloads recorded yet.</p>
+          <p className="mt-2 text-sm text-zinc-400">
+            Download a ZIP from Generate or a project page to see history here.
+          </p>
+          <Link
+            to="/generate"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800"
+          >
+            <Sparkles size={16} />
+            Generate an extension
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {downloads.map((item) => (
+            <DownloadHistoryRow key={item.downloadId} download={item} />
+          ))}
+        </div>
+      )}
+    </DashboardLayout>
   );
-}
-
-const styles = {
-
-  page: {
-    minHeight: "100vh",
-    padding: "40px",
-    background: "#F3F4F6",
-    fontFamily: "Arial",
-  },
-
-  title: {
-    marginBottom: "20px",
-    color: "#111827",
-    fontSize: "42px",
-    fontWeight: "bold",
-  },
-
-  empty: {
-    color: "#6B7280",
-    fontSize: "18px",
-  },
-
-  card: {
-    background: "#FFFFFF",
-    padding: "20px",
-    borderRadius: "15px",
-    marginBottom: "15px",
-    border: "1px solid #E5E7EB",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-  },
-
-  row: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  name: {
-    color: "#111827",
-    fontSize: "22px",
-    fontWeight: "bold",
-  },
-
-  desc: {
-    color: "#4B5563",
-    marginTop: "10px",
-  },
-
-  date: {
-    color: "#6B7280",
-  },
-
-  backBtn: {
-    marginBottom: "20px",
-    padding: "10px 15px",
-    borderRadius: "10px",
-    border: "none",
-    background: "#111827",
-    color: "#fff",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-
-  clearBtn: {
-    marginBottom: "20px",
-    padding: "10px 15px",
-    borderRadius: "10px",
-    border: "none",
-    background: "#DC2626",
-    color: "#fff",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-
-  deleteBtn: {
-    border: "none",
-    background: "#DC2626",
-    color: "#fff",
-    borderRadius: "8px",
-    padding: "6px 10px",
-    cursor: "pointer",
-  },
 };
+
+export default Downloads;

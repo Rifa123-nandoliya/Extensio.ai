@@ -1,25 +1,13 @@
 import fs from "fs/promises";
-
 import path from "path";
+import { ExtensionProject } from "../schemas/extension.schema";
+import { getProjectDir } from "../utils/paths";
 
-import { ExtensionProject }
-from "../schemas/extension.schema";
-
-export async function
-writeProjectFiles(
-
+export async function writeProjectFiles(
   project: ExtensionProject,
-
   projectId: string
-
 ) {
-
-  const projectPath =
-    path.join(
-      process.cwd(),
-      "temp",
-      projectId
-    );
+  const projectPath = getProjectDir(projectId);
 
   await fs.mkdir(
     projectPath,
